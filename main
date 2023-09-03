@@ -1,0 +1,111 @@
+import os
+import time
+
+print("hello")
+board=[]
+for i in range(30):
+  list=[]
+  for k in range(40): #i changed it from 60 to 40, change it back when done
+    list.append(False)  
+  board.append(list)  
+
+
+def printboard(w):
+  for l in w:
+    for j in l:
+      if j == True:
+        print("O", end=" ")
+      else:
+        print("-", end=" ")
+    
+myfile = open("hertz-oscillator.in", "r")
+mylist=myfile.read().strip().split("\n")
+
+
+for i in range(len(mylist)):
+  a=mylist[i].split(" ")
+  board[int(a[0])][int(a[1])]=True
+
+def neigbors(board,x,y):
+  
+  live=0
+  dead=0
+  
+  lb=len(board)
+
+  lb0=len(board[0])
+
+  if x-1>=0 and y-1>=0 and board[x-1][y-1]==True:
+    live+=1
+  else:
+    dead+=1 
+  if x-1>=0 and board[x-1][y+0]==True:
+    live+=1
+  else:
+    dead+=1     
+  if x-1>=0 and y+1<lb0 and board[x-1][y+1]==True:
+    live+=1
+  else:
+    dead+=1
+  if y-1>=0 and board[x+0][y-1]==True:
+    live+=1
+  else:
+    dead+=1
+  if y+1<lb0 and board[x+0][y+1]==True:
+    live+=1
+  else:
+    dead+=1
+  if x+1<lb and y-1>=0 and board[x+1][y-1]==True:
+    live+=1
+  else:
+    dead+=1
+  if x+1<lb and board[x+1][y+0]==True:
+    live+=1
+  else:
+    dead+=1
+  if x+1<lb and y+1<lb0 and board[x+1][y+1]==True:
+    live+=1
+  else:
+    dead+=1
+  return(live)
+
+
+def rules(board,x,y):
+  cell=neigbors(board, x, y)
+
+  if board[x][y]==True:
+    if cell > 3 or cell < 2:
+      return(False)
+    if cell == 2 or cell == 3:
+      return(True)
+
+  if board[x][y]==False:
+    if cell==3:
+      return(True)
+    else:
+      return(False)    
+
+
+
+while True:
+  time.sleep(1)
+  print("\033c")
+  
+  lb=len(board)
+  lb0=len(board[0])
+
+  newboard=[]
+  for i in range(30):
+    list=[]
+    for k in range(40): #i changed it from 60 to 40, change it back when done
+      list.append(False)  
+    newboard.append(list)  
+
+  for i in range(lb):
+    for k in range(lb0):
+      newboard[i][k]=rules(board,i,k)
+  
+  printboard(newboard)   
+  print("  ")
+  board=newboard
+  
